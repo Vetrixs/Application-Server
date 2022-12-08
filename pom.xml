@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>de.school</groupId>
-    <artifactId>application</artifactId>
+    <artifactId>twitter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>LF 10 application</name>
-    <description>LF 10 application</description>
+    <name>LF 10 Twitter</name>
+    <description>LF 10 twitter</description>
     <properties>
         <java.version>17</java.version>
     </properties>

@@ -25,7 +25,7 @@ services:
       - db
     image: tomcat
     volumes:
-      - ./target/application-0.0.1-SNAPSHOT.war:/usr/local/tomcat/webapps/application.war
+      - ./target/twitter-0.0.1-SNAPSHOT.war:/usr/local/tomcat/webapps/twitter.war
     ports:
       - '8080:8080'
     environment:
