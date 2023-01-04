@@ -1,0 +1,81 @@
+<mat-toolbar>
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" style="z-index: 1000;">
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"> 
+      <mat-icon>menu</mat-icon>
+    </a>
+  </button>
+  <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" style="z-index: 1000;">
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"> 
+      <mat-icon>favorite</mat-icon> 
+    </a>
+  </button>
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" style="z-index: 1000;">
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"> 
+      <mat-icon>share</mat-icon>
+    </a>
+  </button>
+  <div style="text-align: center; min-width: 98%; position: absolute; font-size: 30px;">
+    Twatter
+  </div>
+</mat-toolbar>
+<mat-grid-list cols="100" rowHeight="2000px">
+  <mat-grid-tile
+    [colspan]="30"
+    style="background-color: #161616;"
+  ></mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="40"
+    style="background-color: #161616;"
+  >    
+    <div class="internalGrid">  
+      <div *ngFor="let tweet of tweets" style="background-color: #161616; display: block; overflow: auto;">
+        <div #tweetContent [id]="tweet.id" style="margin: 20px; margin-right: 50px; margin-bottom: 30px; background-color: #f0f0f0; border-radius: 5px; padding: 5px;">
+          {{ tweet.content }}
+        </div>
+        <div style="min-width: 100%;">
+          <button style="float: left; margin-left: 20px;" type="button" (click)="toggleComments(+tweetContent.id)">Comments</button>
+          
+          <div (click)="deleteTweet(+tweetContent.id)">
+            <mat-icon style="float: right; margin-right: 50px; color: white; cursor: pointer;">delete</mat-icon>
+          </div>
+          <div (click)="likeTweet(+tweetContent.id)">
+            <mat-icon style="float: right; margin-right: 20px; color: white; cursor: pointer;">favorite</mat-icon>
+          </div>
+          <div style="float: right;  color: white; font-size: 17px; margin-top: 2px; margin-right: 10px;">
+            {{ tweet.likes }}
+          </div>
+        </div>
+        <br>
+        <div *ngIf="tweet.showComments">
+          <div *ngFor="let comment of tweets[ tweetIndexById(+tweetContent.id) ].comments">
+            <div #commentContent [id]="comment.id" style="margin: 20px; margin-left: 50px; margin-right: 75px; margin-bottom: 15px; background-color: #f0f0f0; border-radius: 5px; padding: 5px;">
+              {{ comment.content }}
+            </div>
+            <div style="min-width: 100%;">
+              <div (click)="likeComment(+tweetContent.id, +commentContent.id)">
+                <mat-icon style="float: right; margin-right: 75px; color: white; cursor: pointer;">favorite</mat-icon>
+              </div>
+              <div style="float: right;  color: white; font-size: 17px; margin-top: 2px; margin-right: 10px;">
+                {{ comment.likes }}
+              </div>
+            </div>
+            <br>
+          </div>
+          <br>
+          <div style="height: 100px;"> 
+            <textarea #commentInput style="margin-left: 50px;" class="input-format"></textarea>
+            <button style="float: left; margin-left: 50px;" type="button" (click)="submitComment(commentInput.value, +tweetContent.id)">Comment</button>
+          </div>
+        </div>
+      </div>  
+      <div style="height: 100px;"> 
+        <textarea #tweetInput class="input-format"></textarea>
+        <button style="float: left; margin-left: 20px;" type="button" (click)="submitTweet(tweetInput.value)">Tweet</button>
+      </div>
+    </div>  
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="30"
+    style="background-color: #161616;"
+  ></mat-grid-tile>
+</mat-grid-list>
