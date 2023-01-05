@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpService, Tweet, Comment } from './http.service';
 
 @Component({
@@ -6,21 +6,30 @@ import { HttpService, Tweet, Comment } from './http.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements AfterViewInit{
   tweets!: Tweet[]
   port: string = '8080'
   height: number = window.innerHeight
-  @ViewChild('content') contentDiv!: ElementRef<HTMLDivElement>;
+  observer!: ResizeObserver
+  @ViewChild('content') contentDiv!: ElementRef<HTMLDivElement>
 
-  constructor(private http: HttpService){}
+  constructor(private http: HttpService, private ref: ChangeDetectorRef){}
 
-  async ngOnInit() {
+  async ngAfterViewInit(){
+    this.elementObserver()
     await this.setTweets()
   }
 
-  async ngAfterViewInit(){
-    await new Promise(f => setTimeout(f, 100))
-    this.height = this.getHeight()
+  elementObserver() {
+    this.observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const cr = entry.contentRect
+        this.height = (cr.height < window.innerHeight) ? window.innerHeight : cr.height
+        this.ref.detectChanges()
+      }
+    })
+
+    this.observer.observe(this.contentDiv.nativeElement)
   }
 
   async setTweets(){
@@ -49,17 +58,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       }
     }
-    await new Promise(f => setTimeout(f, 100))
-    this.height = this.getHeight()
   }
 
   setHeight(){
     return `${this.height + 200}px`
-  }
-
-  getHeight(): number{
-    var height = this.contentDiv.nativeElement.offsetHeight
-    return (height < window.innerHeight) ? window.innerHeight : height
   }
 
   tweetIndexById(id: number){
@@ -97,12 +99,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         break
       }
     }
-    this.height = this.getHeight()
   }
 
   async submitTweet(tweet: string){
-    this.height = this.getHeight()
-
     await this.http.post(`http://127.0.0.1:${this.port}/tweet`, { content: tweet })
     await this.setTweets()
   }
