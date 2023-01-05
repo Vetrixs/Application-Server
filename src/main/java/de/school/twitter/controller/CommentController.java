@@ -1,18 +1,13 @@
 package de.school.twitter.controller;
 
-import java.util.List;
-
 import de.school.twitter.model.Comment;
 import de.school.twitter.model.Tweet;
 import de.school.twitter.repository.CommentRepository;
 import de.school.twitter.repository.TweetRepository;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class CommentController {
@@ -28,7 +23,7 @@ public class CommentController {
         return commentRepository.findAll();
     }
 
-    @PostMapping("tweet/{id}/comment")
+    @PostMapping("/tweet/{id}/comment")
     public void addComment(
             @PathVariable("id") Integer aId,
             @RequestBody Comment aComment){
@@ -40,7 +35,14 @@ public class CommentController {
     }
 
     @GetMapping("/tweet/{id}/comments")
-    public List<Comment> getAllCommentsForTweet(@PathVariable("id") Integer aId){
+    public List<Comment> getAllCommentsForTweet(@PathVariable("id") Integer aId) {
         return commentRepository.getAllCommentsByTweet(aId);
+    }
+
+    @GetMapping("/tweet/{id}/comment/{comment_id}/like")
+    public void likeComment(@PathVariable("id") Integer aId, @PathVariable("comment_id") Integer aCommentId) {
+        Comment comment = commentRepository.getReferenceById(aCommentId);
+        comment.setLikes(comment.getLikes() + 1);
+        commentRepository.save(comment);
     }
 }

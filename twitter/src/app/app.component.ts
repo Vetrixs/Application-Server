@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { HttpService, Tweet, Comment } from './http.service';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Comment, HttpService, Tweet} from './http.service';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +9,7 @@ import { HttpService, Tweet, Comment } from './http.service';
 export class AppComponent implements OnInit, AfterViewInit {
   tweets!: Tweet[]
   port: string = '8080'
+  url: string = 'https://twatter.vetrix.dev'
   height: number = window.innerHeight
   @ViewChild('content') contentDiv!: ElementRef<HTMLDivElement>;
 
@@ -24,7 +25,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   async setTweets(){
-    this.tweets = (<Tweet[]>await this.http.get(`http://127.0.0.1:${this.port}/tweet`))
+    this.tweets = (<Tweet[]>await this.http.get(`${this.url}/twitter/`))
 
     for(var i of this.tweets){
       i.showComments = false
@@ -33,7 +34,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   async setComments(item: any, overWrite: boolean = false): Promise<boolean>{
     if(item.comments == undefined || overWrite == true){
-      item.comments     = <Comment[]>await this.http.get(`http://127.0.0.1:${this.port}/tweet/${item.id}/comment`)
+      item.comments = <Comment[]>await this.http.get(`${this.url}/twitter/tweet/${item.id}/comments`)
       item.showComments = true
       return true
     }
@@ -89,7 +90,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   async submitComment(comment: string, id: number){
-    await this.http.post(`http://127.0.0.1:${this.port}/tweet/${id}/comment`, { content: comment })
+    await this.http.post(`${this.url}/twitter/tweet/${id}/comment`, {content: comment})
 
     for(var i of this.tweets){
       if(i.id == id){
@@ -103,24 +104,24 @@ export class AppComponent implements OnInit, AfterViewInit {
   async submitTweet(tweet: string){
     this.height = this.getHeight()
 
-    await this.http.post(`http://127.0.0.1:${this.port}/tweet`, { content: tweet })
+    await this.http.post(`${this.url}/twitter/tweet`, {content: tweet})
     await this.setTweets()
   }
 
   async likeTweet(id: number){
-    await this.http.get(`http://127.0.0.1:${this.port}/tweet/${id}/like`)
+    await this.http.get(`${this.url}/twitter/tweet/${id}/like`)
 
     this.tweets[ this.tweetIndexById(id) ].likes++
   }
 
   async likeComment(tid: number, cid: number){
-    await this.http.get(`http://127.0.0.1:${this.port}/tweet/${tid}/comment/${cid}/like`)
+    await this.http.get(`${this.url}/twitter/tweet/${tid}/comment/${cid}/like`)
 
     this.tweets[ this.tweetIndexById(tid) ].comments[ this.commentIndexById(tid, cid) ].likes++
   }
 
   async deleteTweet(id: number){
-    await this.http.delete(`http://127.0.0.1:${this.port}/tweet/${id}`)
+    await this.http.delete(`${this.url}/twitter/tweet/${id}`)
     await this.setTweets()
   }
 }
