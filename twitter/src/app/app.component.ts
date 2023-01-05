@@ -24,7 +24,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   async setTweets(){
-    this.tweets = (<Tweet[]>(<any>await this.http.get(`http://127.0.0.1:${this.port}/tweet`)).tweets)
+    this.tweets = (<Tweet[]>await this.http.get(`http://127.0.0.1:${this.port}/tweet`))
 
     for(var i of this.tweets){
       i.showComments = false
