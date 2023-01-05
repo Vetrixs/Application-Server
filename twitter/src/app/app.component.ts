@@ -8,7 +8,7 @@ import { HttpService, Tweet, Comment } from './http.service';
 })
 export class AppComponent implements OnInit, AfterViewInit {
   tweets!: Tweet[]
-  port: string = '5000'
+  port: string = '8080'
   height: number = window.innerHeight
   @ViewChild('content') contentDiv!: ElementRef<HTMLDivElement>;
 
