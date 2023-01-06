@@ -91,19 +91,23 @@ export class AppComponent implements AfterViewInit{
   }
 
   async submitComment(comment: string, id: number){
-    await this.http.post(`http://127.0.0.1:${this.port}/tweet/${id}/comment`, { content: comment })
+    if(comment.length > 0){
+      await this.http.post(`http://127.0.0.1:${this.port}/tweet/${id}/comment`, { content: comment })
 
-    for(var i of this.tweets){
-      if(i.id == id){
-        await this.setComments(i, true)
-        break
+      for(var i of this.tweets){
+        if(i.id == id){
+          await this.setComments(i, true)
+          break
+        }
       }
     }
   }
 
   async submitTweet(tweet: string){
-    await this.http.post(`http://127.0.0.1:${this.port}/tweet`, { content: tweet })
-    await this.setTweets()
+    if(tweet.length > 0){
+      await this.http.post(`http://127.0.0.1:${this.port}/tweet`, { content: tweet })
+      await this.setTweets()
+    }
   }
 
   async likeTweet(id: number){
